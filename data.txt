@@ -1,0 +1,30 @@
+EGN: 034120
+Name: aleks
+Number of Estates Owned: 1
+Address primary: al stamb 111
+EGN: 014417
+Name: ivan
+Number of Estates Owned: 3
+Address primary: dimitar talev 2
+Address of estate number 2: ivan rilski 10
+Address of estate number 3: st grad bl 3
+EGN: 024601
+Name: dimitar boqdjiev
+Number of Estates Owned: 2
+Address primary: blok 3
+Address of estate number 2: blok 54
+EGN: 994222
+Name: leksi
+Number of Estates Owned: 2
+Address primary: h botev 5
+Address of estate number 2: levski 11
+EGN: 024216
+Name: ivailo
+Number of Estates Owned: 2
+Address primary: vasil levski 69
+Address of estate number 2: tu sofia
+EGN: 020202
+Name: Ivan
+Number of Estates Owned: 2
+Address primary: Tu Sofia
+Address of estate number 2: Tu Plovdiv

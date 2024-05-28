@@ -1,0 +1,449 @@
+#ifndef UNTITLED_PERSON_H
+#define UNTITLED_PERSON_H
+
+/**
+ * @class PersonBase
+ * @brief Base class representing a person with basic information.
+ */
+ 
+ 
+class PersonBase{
+private:
+    char* name{};
+    char* egn{};
+    char* address{};
+
+public:
+
+	// Constructor for PersonBase class.
+	
+    PersonBase();
+	
+    // Destructor for PersonBase class.
+	 
+    ~PersonBase();
+    
+    // Set the name of the person.
+
+    void set_name(const char* name_new);
+	// Set the egn for the person. 
+    void set_egn(const char* egn_new);
+	// Set  address for the person.
+    void set_address(const char* address_new);
+
+	// getter methods for all the params.
+    const char* get_name() const;
+    const char* get_egn() const;
+    const char* get_address() const;
+	
+	// Virtual function to print all information about the person.
+	
+    virtual void printAll();
+
+};
+
+#endif 
+
+#include "person.h"
+
+#ifndef UNTITLED_PERSONESTATES_H
+#define UNTITLED_PERSONESTATES_H
+
+//Derived class representing a person with additional estate information.
+
+class PersonEstates: public PersonBase{
+private:
+    char** addresses; //array of strings of the addresses of the person.
+    int numAddresses; // number of estates owned by the person.
+
+public:
+	
+	// Contructor for PersonEstates class. 
+
+    PersonEstates(const char* name, const char* egn, const char* address, int numAddresses, const char** estateAddresses);
+	
+	// Destructor for PersonEstates class.
+    ~PersonEstates();
+	
+	
+	// Setters and Getters for the two parameters.
+    void set_numAddresses(int num);
+    int get_numAddresses() const;
+
+    void set_estateAddresses(char** estateAddresses);
+    char** get_estateAddresses() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const PersonEstates& person);
+	// Function to print all information about the person and their estates.
+    void printAll();
+};
+#endif
+
+
+#pragma once
+#include "iostream"
+#include "cstring"
+#include "person.h"
+
+
+PersonBase::PersonBase() {
+    set_name("");
+    set_egn("");
+    set_address("");
+}
+
+PersonBase::~PersonBase() {
+    delete[] name;
+    delete[] egn;
+    delete[] address;
+}
+
+void PersonBase::set_name(const char* name_new) {
+    delete[] name;
+    name = new char[strlen(name_new) + 1];
+    strcpy(name, name_new);
+}
+
+void PersonBase::set_egn(const char* egn_new) {
+    delete[] egn;
+    egn = new char[strlen(egn_new) + 1];
+    strcpy(egn, egn_new);
+}
+
+void PersonBase::set_address(const char* address_new) {
+    delete[] address;
+    address = new char[strlen(address_new) + 1];
+    strcpy(address, address_new);
+}
+
+const char* PersonBase::get_name() const {
+    return name;
+}
+
+const char* PersonBase::get_egn() const {
+    return egn;
+}
+
+const char* PersonBase::get_address() const {
+    return address;
+}
+
+void PersonBase::printAll() {
+}
+
+#pragma once
+#include "person.cpp"
+#include "personEstates.h"
+
+PersonEstates::PersonEstates(const char* name, const char* egn, const char* address, int numAddresses,const  char** estateAddresses){
+    set_name(name);
+    set_egn(egn);
+    set_address(address);
+
+    this->numAddresses = numAddresses;
+    this->addresses = new char*[numAddresses];
+
+    for (int i = 0; i < numAddresses; ++i) {
+        this->addresses[i] = new char[strlen(estateAddresses[i]) + 1];
+        strcpy(this->addresses[i], estateAddresses[i]);
+    }
+}
+
+PersonEstates::~PersonEstates() {
+    for (int i = 0; i < numAddresses; ++i) {
+        delete[] addresses[i];
+    }
+    delete[] addresses;
+}
+
+void PersonEstates::set_numAddresses(int num) {
+    numAddresses = num;
+}
+
+int PersonEstates::get_numAddresses() const {
+    return numAddresses;
+}
+
+void PersonEstates::set_estateAddresses(char** estateAddresses) {
+    for (int i = 0; i < numAddresses; ++i) {
+        delete[] addresses[i];
+    }
+    delete[] addresses;
+
+    addresses = new char*[numAddresses];
+
+    for (int i = 0; i < numAddresses; ++i) {
+        addresses[i] = new char[strlen(estateAddresses[i]) + 1];
+        strcpy(addresses[i], estateAddresses[i]);
+    }
+}
+
+char** PersonEstates::get_estateAddresses() const {
+    return addresses;
+}
+
+void PersonEstates::printAll(){
+    std::cout<<"\n"<<get_name()<< " " << get_egn() << " " << get_address() <<std::endl;
+}
+
+std::ostream &operator<<(std::ostream &os, const PersonEstates &person) {
+    os << "EGN: " << person.get_egn() << "\n";
+    os << "Name: " << person.get_name() << "\n";
+    os << "Number of Estates Owned: " << person.get_numAddresses() << "\n";
+    os << "Address primary: " << person.get_address() << "\n";
+
+    for (int i = 1; i < person.get_numAddresses(); ++i) {
+        os << "Address of estate number " << (i + 1) << ": " << person.get_estateAddresses()[i] << "\n";
+    }
+
+    return os;}
+
+#include "person.cpp"
+#include "personEstates.cpp"
+#include <limits>
+#include <iostream>
+#include <fstream>
+
+
+PersonEstates createPerson(){
+    char nameBuffer[100];
+    char egnBuffer[100];
+    char addressBuffer[100];
+    int numOfAddresses;
+
+    std::cout<<"\n"<<"Enter name:";
+    std::cin.getline(nameBuffer, 100);
+
+
+    std::cout<<"Enter EGN:";
+    std::cin.getline(egnBuffer, 100);
+
+
+    std::cout<<"Enter primary address:";
+    std::cin.getline(addressBuffer, 100);
+
+
+    std::cout<<"Enter number of owned estates:";
+    std::cin>>numOfAddresses;
+    std::cin.ignore();
+
+
+    const char** estateAddresses = new const char*[numOfAddresses];
+
+    for (int i = 1; i < numOfAddresses; ++i) {
+        char estateAddress[100];
+        std::cout << "Enter estate address " << (i + 1) << ": ";
+        std::cin.getline(estateAddress, 100);
+        estateAddresses[i] = strdup(estateAddress);
+    }
+
+    return {nameBuffer, egnBuffer, addressBuffer, numOfAddresses, estateAddresses};
+
+}
+
+void saveToFile(const PersonEstates& personToSave){
+    std::ofstream Data("C:/Docs/BPE C/untitled/data.txt", std::ios::app);
+    if (!Data.is_open()) {
+        std::cerr << "Error opening file: data.txt\n";
+        return;
+    }
+
+    Data << personToSave;
+    Data.close();
+    if (Data.fail()) {
+        std::cerr << "Error writing to file\n";
+    } else {
+        std::cout << "Data saved\n";
+    }
+    Data.close();
+}
+
+void findByAddress(const std::string& addressToFind){
+    // Variables to store information	
+    std::string infoBlock, line;
+
+    // Open the data file for reading
+    std::ifstream Data("C:/Docs/BPE C/untitled/data.txt");
+    if (!Data.is_open()) {
+		// Display an error message if the file cannot be opened
+        std::cerr << "Error opening file: data.txt\n";
+        return;
+    }
+	
+    // Flag to track whether the address is found
+    bool found = false;
+
+    // Loop through each line in the data file
+    while (std::getline(Data, line)) {
+        // Check if the line marks the start of a new information block
+        size_t blockStart = line.find("EGN");
+        if (blockStart != std::string::npos){
+            if(found){
+                // If the address has been found in a previous block, exit the loop
+                break;
+            }
+            infoBlock.clear(); // Clear the information block for the new block
+        }
+        // Append the current line to the information block
+        infoBlock.append(line);
+        infoBlock.append("\n");
+		
+		
+        // Check if the line contains the address
+        size_t pos = line.find("Address");
+        if (pos != std::string::npos) {
+			
+            // Extract the address from the line
+            std::string foundAddress = line.substr(pos + strlen("Address "));
+            if (foundAddress[0] == 'p'){
+                foundAddress = line.substr(pos + strlen("Address primary: "));
+            }
+            else{
+                foundAddress = line.substr(pos + strlen("Address of estate number x: "));
+            }
+            // Trim leading and trailing whitespaces
+            foundAddress.erase(0, foundAddress.find_first_not_of(" \t\n\r\f\v"));
+            foundAddress.erase(foundAddress.find_last_not_of(" \t\n\r\f\v") + 1);
+
+            // Compare foundAddress with the target address
+            if (foundAddress == addressToFind) {
+                found = true;
+            }
+        }
+    }
+    // Display the result based on whether the address is found
+
+    if (!found) {
+        std::cout <<"\n"<< "Address not found: " << addressToFind <<"\n" <<std::endl;
+		// Close the data file
+		Data.close();
+		return;
+    }
+    else{
+        std::cout <<"\n"<< "Address found: " << addressToFind <<  "\n" << std::endl;
+        std::cout << infoBlock <<std::endl;
+        // Close the data file and return
+        Data.close();
+        return;
+
+    }
+
+
+}
+
+
+void addressToSearch(){
+    char addressSearch[100];
+    std::cout<<"\n"<<"Enter address: ";
+    std::cin.getline(addressSearch, 100);
+    findByAddress(addressSearch);
+}
+
+// Finds and displays information related to a specific EGN in the data file.
+void findByEGN(const std::string& egnToSearch){
+    // Open the data file for reading
+    std::ifstream Data("C:/Docs/BPE C/untitled/data.txt");
+    if (!Data.is_open()) {
+        // Display an error message if the file cannot be opened
+        std::cerr << "Error opening file: data.txt\n";
+        return;
+    }
+
+    // Flag to track whether the EGN is found
+    bool found = false;
+    std::string line, infoBlock;
+
+    // Loop through each line in the data file
+    while (std::getline(Data, line)) {
+
+        // Clear the information block for each new iteration if the EGN has not been found yet
+        if(!found){
+            infoBlock.clear();
+        }
+		
+        // Check if the line contains the EGN information
+        size_t pos = line.find("EGN");
+        if (pos != std::string::npos) {
+			
+            // If the EGN has been found in a previous block, exit the loop
+            if(found){
+                break;
+            }
+			
+            // Extract the EGN from the line
+            std::string foundEGN = line.substr(pos + strlen("EGN: "));
+            
+            // Compare the found EGN with the target EGN			
+			if(foundEGN == egnToSearch){
+                found = true;
+            }
+        }
+		
+        // Append the current line to the information block
+        infoBlock.append(line);
+        infoBlock.append("\n");
+    }
+	
+    Data.close();
+	
+	// Display the result based on whether the EGN is found
+    if(found){
+        std::cout<<"\nPerson found:\n"<<infoBlock<<std::endl;
+        return;
+    }
+    else{
+        std::cout<<"\nPerson could not be found!\n"<<std::endl;
+    }
+}
+
+void egnToSearch(){
+    char egnToSearch[10];
+    std::cout<<"\n"<<"Enter EGN: ";
+    std::cin.getline(egnToSearch, 10);
+    findByEGN(egnToSearch);
+}
+
+#include <iostream>
+#include "person.cpp"
+#include "personEstates.cpp"
+#include "functions.cpp"
+
+int main() {
+
+    int choice = 0;
+
+    while (true){
+        std::cout<<"What would you like to do?\n0. Exit\n1. Add new person\n2. Find person by address\n3. Find person bt EGN\n"<<std::endl;
+        std::cout<<"Enter choice:";
+        std::cin>> choice;
+        std::cin.ignore();
+        if (choice == 0){
+            break;
+        }
+        else if(choice == 1) {
+            int save = 0;
+            PersonEstates person = createPerson();
+            std::cout<<"\n"<<person<<std::endl;
+            std::cout<<"Would you like to save this information? (1/0):";
+            std::cin>>save;
+            std::cout<<"\n";
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if (save == 1){
+                saveToFile(person);
+            }
+        }
+        else if(choice == 2){
+            addressToSearch();
+        }
+
+        else if(choice == 3){
+            egnToSearch();
+        }
+
+        else{
+            std::cout<< "Invalid response!\n"<< std::endl;
+        }
+    }
+
+    return 0;
+}
